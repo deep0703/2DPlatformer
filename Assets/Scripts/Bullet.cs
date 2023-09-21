@@ -11,7 +11,26 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float bulletSpeed = 5f;
     [SerializeField] private int bulletDamage = 1;
 
+    // Bullet Limitation
+    private static int currentBulletCount = 0;
+    private const int MAX_BULLETS = 10;  // Modify this value based on your desired limit
+
     private Transform target;
+
+    public static bool CanInstantiateBullet()
+    {
+        return currentBulletCount < MAX_BULLETS;
+    }
+
+    private void Awake()
+    {
+        currentBulletCount++;
+    }
+
+    private void OnDestroy()
+    {
+        currentBulletCount--;
+    }
 
     public void SetTarget(Transform _target)
     {
@@ -23,7 +42,7 @@ public class Bullet : MonoBehaviour
         if (!target) return;
         Vector2 direction = (target.position - transform.position).normalized;
 
-        rb.velocity = direction * bulletSpeed; 
+        rb.velocity = direction * bulletSpeed;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -31,5 +50,4 @@ public class Bullet : MonoBehaviour
         other.gameObject.GetComponent<Health>().TakeDamage(bulletDamage);
         Destroy(gameObject);
     }
-
 }

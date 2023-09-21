@@ -20,12 +20,19 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
-       if(Vector2.Distance(target.position,transform.position) <= 0.1f)
+        if (Vector2.Distance(target.position, transform.position) <= 0.1f)
         {
             pathIndex++;
+
             if (pathIndex == LevelManager.main.path.Length)
             {
+                // Trigger the onEnemyDestroy event
                 EnemySpawner.onEnemyDestroy.Invoke();
+
+                // End the game
+                LevelManager.main.GameOver();
+
+                // Destroy this enemy object
                 Destroy(gameObject);
                 return;
             }
@@ -34,7 +41,6 @@ public class EnemyMovement : MonoBehaviour
                 target = LevelManager.main.path[pathIndex];
             }
         }
-
     }
 
     private void FixedUpdate()
