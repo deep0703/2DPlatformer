@@ -7,7 +7,7 @@ public class BulletFarm : MonoBehaviour
     [Header("Bullet Production")]
     [SerializeField] private int maxBullets = 100;
     [SerializeField] private int currentBullets = 0; // You can start with some bullets already in the farm.
-    [SerializeField] private float productionRate = 1f; // Bullets produced per second.
+    [SerializeField] private float productionRate = 0.01f; // Bullets produced per second.
 
     [Header("UI")]
     [SerializeField] private TMP_Text bulletCounterText;
@@ -35,7 +35,7 @@ public class BulletFarm : MonoBehaviour
 
     private void UpdateBulletCounter()
     {
-        bulletCounterText.text = currentBullets.ToString();
+        bulletCounterText.text = "Bullet Farm:" + currentBullets.ToString();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
