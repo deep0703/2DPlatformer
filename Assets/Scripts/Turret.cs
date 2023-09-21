@@ -115,7 +115,22 @@ public class Turret : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
-        transform.position += new Vector3(moveX, moveY, 0) * speed * Time.deltaTime;
+        // Calculate the new position based on input.
+        Vector3 newPosition = transform.position + new Vector3(moveX, moveY, 0) * speed * Time.deltaTime;
+
+        // Determine the camera's boundaries.
+        float camHalfHeight = Camera.main.orthographicSize;
+        float camHalfWidth = camHalfHeight * Camera.main.aspect;
+        float minX = -camHalfWidth + Camera.main.transform.position.x;
+        float maxX = camHalfWidth + Camera.main.transform.position.x;
+        float minY = -camHalfHeight + Camera.main.transform.position.y;
+        float maxY = camHalfHeight + Camera.main.transform.position.y;
+
+        // Clamp the turret's position so it stays within the camera's boundaries.
+        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+        newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
+
+        transform.position = newPosition;
     }
 
     public void AddBullets(int amount)

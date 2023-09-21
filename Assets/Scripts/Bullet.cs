@@ -40,10 +40,15 @@ public class Bullet : MonoBehaviour
     private void FixedUpdate()
     {
         if (!target) return;
+
         Vector2 direction = (target.position - transform.position).normalized;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
         rb.velocity = direction * bulletSpeed;
     }
+
+
 
     private void OnCollisionEnter2D(Collision2D other)
     {

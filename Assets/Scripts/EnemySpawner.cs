@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
+
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -14,6 +16,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float enemiesPerSecond = 0.5f;
     [SerializeField] private float timeBetweenWaves = 5f;
     [SerializeField] private float difficultyScalingFactor = 0.75f;
+
+    [Header("UI")]
+    [SerializeField] private TMP_Text waveNumberText;
 
     [Header("Events")]
     public static UnityEvent onEnemyDestroy = new UnityEvent();
@@ -40,7 +45,7 @@ public class EnemySpawner : MonoBehaviour
 
         timeSinceLastSpawn += Time.deltaTime;
 
-        if (timeSinceLastSpawn >= (1f / enemiesPerSecond) && enemiesLeftToSpawn > 0)
+        if (timeSinceLastSpawn >= (1f / (enemiesPerSecond + (currentWave * 0.1f))) && enemiesLeftToSpawn > 0)
         {
             SpawnEnemy();
             enemiesLeftToSpawn--;
@@ -71,18 +76,30 @@ public class EnemySpawner : MonoBehaviour
         yield return new WaitForSeconds(timeBetweenWaves);
         isSpawning = true;
         enemiesLeftToSpawn = EnemiesPerWave();
+
+        UpdateWaveNumberText();
     }
 
     private void EndWave()
     {
         isSpawning = false;
         timeSinceLastSpawn = 0f;
+        currentWave++;
         StartCoroutine(StartWave());
     }
 
-    
+
+
     private int EnemiesPerWave()
     {
         return Mathf.RoundToInt(baseEnemies * Mathf.Pow(currentWave, difficultyScalingFactor));
     }
+
+    private void UpdateWaveNumberText()
+    {
+        if (waveNumberText != null)
+            waveNumberText.text = "Wave: " + currentWave.ToString();
+    }
+
+
 }
